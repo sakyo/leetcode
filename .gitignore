@@ -17,5 +17,6 @@ server.pid
 *.eml
 /dist/
 .cache
+.idea/
 
 
