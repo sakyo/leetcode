@@ -1,9 +1,14 @@
 package com.leetcode;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
+ * Solution Base
+ *
  * @author yangzhongwei
  * @date 2015-08-27 08:05
  */
-public class Solution {
+public interface Solution{
 
 }
