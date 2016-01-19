@@ -28,48 +28,84 @@ import java.util.Date;
 public class MedianFinder {
 
     // 长度
-    private int size = 0;
+    private int big_size = 0;
 
     // 数据
-    private int[] data = new int[60002];
+    private int[] big_data = new int[20000];
+
+    // 长度
+    private int small_size = 0;
+
+    // 数据
+    private int[] small_data = new int[20000];
 
     // Adds a number into the data structure.
     public void addNum(int num) {
-        if (size == 0)
-            data[0] = num;
-        else
-            add(insert(0, size - 1, num), num);
-        size++;
+        offer(num, true);
+        offer(-poll(true), false);
+        if (big_size < small_size)
+            offer(-poll(false), true);
     }
 
     // Returns the median of current data stream
     public double findMedian() {
-        int pos = size / 2;
-        if (size % 2 == 0)
-            return (data[pos] + data[pos - 1]) / 2.0;
+        if (big_size > small_size)
+            return big_data[0];
         else
-            return data[pos];
+            return (big_data[0] - small_data[0]) / 2.0;
     }
 
-    public int insert(int start, int end, int num) {
-        if (start >= end)
-            return num > data[start] ? start + 1 : start;
-        int pos = (start + end) / 2;
-        if (num == data[pos])
-            return pos;
-        if (num < data[pos])
-            return insert(start, pos - 1, num);
-        return insert(pos + 1, end, num);
-    }
-
-    private void add(int pos, int num) {
-        if (pos == size) {
-            data[size] = num;
+    private void offer(int i, boolean isbigger) {
+        if (isbigger) {
+            int k = big_size++;
+            while (k > 0) {
+                int parent = (k - 1) >>> 1;
+                if (big_data[parent] < i)
+                    break;
+                big_data[k] = big_data[parent];
+                k = parent;
+            }
+            big_data[k] = i;
         } else {
-            System.arraycopy(data, pos, data, pos + 1,
-                    size - pos);
-            data[pos] = num;
+            int k = small_size++;
+            while (k > 0) {
+                int parent = (k - 1) >>> 1;
+                if (small_data[parent] < i)
+                    break;
+                small_data[k] = small_data[parent];
+                k = parent;
+            }
+            small_data[k] = i;
         }
+    }
+
+    private int poll(boolean isbigger) {
+        if (isbigger) {
+            --big_size;
+            return poll(big_data, big_size);
+        } else {
+            --small_size;
+            return poll(small_data, small_size);
+        }
+    }
+
+    private int poll(int data[], int size) {
+        int last = data[size];
+        int e = data[0];
+        int pos = 0;
+        int half = size >>> 1;
+        while (pos < half) {
+            int child = (pos << 1) + 1;
+            int right = child + 1;
+            if (right < size && data[child] > data[right])
+                child = right;
+            if (last <= data[child])
+                break;
+            data[pos] = data[child];
+            pos = child;
+        }
+        data[pos] = last;
+        return e;
     }
 
     public static void main(String[] args) {
