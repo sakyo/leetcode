@@ -28,7 +28,7 @@ public class SingleNumberIII {
             int xor = nums[0];
             for(int i = 1; i<nums.length; i++)
                 xor = xor ^ nums[i];
-            xor = ((xor ^ (xor-1)) + 1) >>1;
+            xor = ((xor ^ (xor-1)) + 1) >>1; // xor & -xor
             for(int i = 0; i<nums.length; i++)
                 if((xor & nums[i]) ==0)
                     result[0] = result[0] ^ nums[i];
