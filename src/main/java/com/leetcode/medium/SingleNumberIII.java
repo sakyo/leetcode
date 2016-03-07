@@ -23,14 +23,15 @@ import java.util.Date;
 public class SingleNumberIII {
 
     public static class Solution {
+
         public int[] singleNumber(int[] nums) {
             int[] result = new int[2];
             int xor = nums[0];
-            for(int i = 1; i<nums.length; i++)
+            for (int i = 1; i < nums.length; i++)
                 xor = xor ^ nums[i];
-            xor = ((xor ^ (xor-1)) + 1) >>1; // xor & -xor
-            for(int i = 0; i<nums.length; i++)
-                if((xor & nums[i]) ==0)
+            xor = ((xor ^ (xor - 1)) + 1) >> 1; // xor & -xor
+            for (int i = 0; i < nums.length; i++)
+                if ((xor & nums[i]) == 0)
                     result[0] = result[0] ^ nums[i];
                 else
                     result[1] = result[1] ^ nums[i];
