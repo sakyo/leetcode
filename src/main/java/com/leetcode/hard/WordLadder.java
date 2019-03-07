@@ -25,7 +25,7 @@ import java.util.*;
  * <p/>
  * https://leetcode.com/problems/word-ladder/
  */
-public class WordLadder implements Solution {
+public class WordLadder {
 
     /**
      * 594ms

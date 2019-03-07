@@ -18,7 +18,7 @@ import com.leetcode.Solution;
  * <p/>
  * https://leetcode.com/problems/minimum-size-subarray-sum/
  */
-public class MinimumSizeSubarraySum implements Solution {
+public class MinimumSizeSubarraySum{
 
     public int minSubArrayLen(int s, int[] nums) {
         if (s == 0)
