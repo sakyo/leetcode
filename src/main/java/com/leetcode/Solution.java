@@ -10,6 +10,7 @@ import java.util.Date;
  * @date 2015-08-27 08:05
  */
 public abstract class Solution {
+
     public abstract void test();
 
     public static void main(String[] args) throws Exception {
