@@ -1,5 +1,9 @@
 package com.leetcode;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -21,4 +25,7 @@ public abstract class Solution {
         System.out.println(new SimpleDateFormat("hh:mm:ss SSS").format(new Date()));
     }
 
+    public <T> T convert(String source, T type){
+        return new Gson().fromJson(source, (Type) type.getClass());
+    }
 }
