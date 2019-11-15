@@ -28,4 +28,5 @@ public abstract class Solution {
     public <T> T convert(String source, T type){
         return new Gson().fromJson(source, (Type) type.getClass());
     }
+
 }
