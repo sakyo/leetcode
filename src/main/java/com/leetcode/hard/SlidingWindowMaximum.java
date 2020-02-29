@@ -2,6 +2,8 @@ package com.leetcode.hard;
 
 import com.leetcode.Solution;
 
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 /**
@@ -52,8 +54,31 @@ public class SlidingWindowMaximum extends Solution {
         return result;
     }
 
+    public int[] max(int[] nums, int k) {
+        if (nums.length == 0 || k == 0)
+            return new int[]{};
+        Deque<Integer> deque = new LinkedList<>();
+        k = Math.min(nums.length, k);
+        int[] result = new int[nums.length - k + 1];
+        for (int i = 0; i < nums.length; i++) {
+            while (deque.size() > 0) {
+                if (nums[deque.getLast()] <= nums[i])
+                    deque.removeLast();
+                else
+                    break;
+            }
+            deque.addLast(i);
+            if (i >= k && deque.getFirst() == i - k)
+                deque.removeFirst();
+            if (i >= k - 1)
+                result[i - k + 1] = nums[deque.getFirst()];
+        }
+        return result;
+    }
+
     @Override
     public void test() {
         System.out.println(maxSlidingWindow(new int[]{1, 3, -1, -3, 5, 3, 6, 7}, 3));
+        System.out.println(max(new int[]{1, 3, -1, -3, 5, 3, 6, 7}, 3));
     }
 }
