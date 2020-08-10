@@ -1,5 +1,7 @@
 package com.leetcode.hard;
 
+import com.leetcode.Solution;
+
 import java.util.*;
 
 /**
@@ -33,27 +35,67 @@ import java.util.*;
  * <p>
  * https://leetcode.com/problems/guess-the-word/
  */
-public class GuessTheWord {
+public class GuessTheWord extends Solution {
 
     public void findSecretWord(String[] wordlist, Master master) {
         List<String> source = new ArrayList<String>(Arrays.asList(wordlist));
-        Collections.reverse(source);
-        while (source.size() > 0) {
-            String test = source.get(0);
-            int match = master.guess(test);
-            if (match == 6)
-                return;
-            Iterator<String> iterator = source.iterator();
-            while (iterator.hasNext()) {
-                if (compare(iterator.next(), test) != match)
-                    iterator.remove();
+        List<Map<Integer, Set<Integer>>> cache = build(source);
+        int min = wordlist.length;
+        int index = 0;
+        for (int i = 0; i < source.size(); i++) {
+            int tmp;
+            if ((tmp = score(cache.get(i), null)) < min) {
+                min = tmp;
+                index = i;
             }
         }
-
+        int match = 0;
+        Set<Integer> matched = new HashSet<>();
+        while ((match = master.guess(source.get(index))) != 6) {
+            matched.add(index);
+            Set<Integer> tolist = cache.get(index).get(match);
+            min = wordlist.length;
+            index = 0;
+            for (Integer i : tolist) {
+                if (matched.contains(i))
+                    continue;
+                int tmp;
+                if ((tmp = score(cache.get(i), matched)) < min) {
+                    min = tmp;
+                    index = i;
+                }
+            }
+        }
+        return;
     }
 
-    public String fetch(List<String> source, int lastmatch, String lasttest){
-        return source.get(new Random().nextInt(source.size()));
+    public int score(Map<Integer, Set<Integer>> map, Set<Integer> matched) {
+        int score = 0;
+        for (Map.Entry<Integer, Set<Integer>> entry : map.entrySet()) {
+            int max = 0;
+            for (Integer i : entry.getValue()) {
+                if (matched == null || !matched.contains(i))
+                    max += 1;
+            }
+            if (max > score)
+                score = max;
+        }
+        return score;
+    }
+
+    public List<Map<Integer, Set<Integer>>> build(List<String> source) {
+        List<Map<Integer, Set<Integer>>> result = new ArrayList<>();
+        for (String s : source) {
+            Map<Integer, Set<Integer>> cache = new HashMap<>();
+            for (int i = 0; i < source.size(); i++) {
+                int c = compare(s, source.get(i));
+                if (!cache.containsKey(c))
+                    cache.put(c, new HashSet<>());
+                cache.get(c).add(i);
+            }
+            result.add(cache);
+        }
+        return result;
     }
 
     public int compare(String a, String b) {
@@ -62,6 +104,16 @@ public class GuessTheWord {
             if (a.charAt(j) == b.charAt(j))
                 i++;
         return i;
+    }
+
+    @Override
+    public void test() {
+        findSecretWord(new String[]{"gaxckt", "trlccr", "jxwhkz", "ycbfps", "peayuf", "yiejjw", "ldzccp", "nqsjoa", "qrjasy", "pcldos", "acrtag", "buyeia", "ubmtpj", "drtclz", "zqderp", "snywek", "caoztp", "ibpghw", "evtkhl", "bhpfla", "ymqhxk", "qkvipb", "tvmued", "rvbass", "axeasm", "qolsjg", "roswcb", "vdjgxx", "bugbyv", "zipjpc", "tamszl", "osdifo", "dvxlxm", "iwmyfb", "wmnwhe", "hslnop", "nkrfwn", "puvgve", "rqsqpq", "jwoswl", "tittgf", "evqsqe", "aishiv", "pmwovj", "sorbte", "hbaczn", "coifed", "hrctvp", "vkytbw", "dizcxz", "arabol", "uywurk", "ppywdo", "resfls", "tmoliy", "etriev", "oanvlx", "wcsnzy", "loufkw", "onnwcy", "novblw", "mtxgwe", "rgrdbt", "ckolob", "kxnflb", "phonmg", "egcdab", "cykndr", "lkzobv", "ifwmwp", "jqmbib", "mypnvf", "lnrgnj", "clijwa", "kiioqr", "syzebr", "rqsmhg", "sczjmz", "hsdjfp", "mjcgvm", "ajotcx", "olgnfv", "mjyjxj", "wzgbmg", "lpcnbj", "yjjlwn", "blrogv", "bdplzs", "oxblph", "twejel", "rupapy", "euwrrz", "apiqzu", "ydcroj", "ldvzgq", "zailgu", "xgqpsr", "wxdyho", "alrplq", "brklfk"}, new Master() {
+            @Override
+            public int guess(String word) {
+                return compare(word, "hbaczn");
+            }
+        });
     }
 
     interface Master {
